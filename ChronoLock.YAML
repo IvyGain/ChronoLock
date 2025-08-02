@@ -1,0 +1,287 @@
+# -----------------------------------------------------------------------------
+# ゲーム設計仕様書 (GDD) & 技術設計仕様書 (TDD)
+# プロジェクト名: Chrono Lock (クロノ・ロック)
+# バージョン: 6.0 (Ultimate Breakdown)
+# -----------------------------------------------------------------------------
+
+project_name: "Chrono Lock"
+code_name: "Project Chrono-Lock"
+document_version: "6.0"
+
+# --- 第1章：ゲーム概要と設計思想 ---
+chapter1_overview:
+  concept:
+    tagline: "その指先に、全世界の財宝を。失われた時間を解き明かす、触感アドベンチャー。"
+    summary: |
+      『Chrono Lock』は、Apple Watchの全機能を極限まで活用し、
+      「指先に伝わるリアルな触感」と「日常と連動した継続的成長」をテーマにした、
+      新感覚の宝箱開錠アドベンチャーである。プレイヤーは失われた時間技術の謎を追う
+      「錠前技師」となり、世界中に散らばる宝箱を開錠していく。
+    target_audience: "新しいガジェット体験を求めるテクノロジー愛好家、没入感のある物語を好むゲーマー、そして日々の生活に小さな達成感を加えたい全ての人々。"
+  design_pillars:
+    - pillar: "触覚的没入感 (Tactile Immersion)"
+      goal: "視覚情報への依存を減らし、触覚を主要な情報源とするゲーム体験の確立。"
+      key_features:
+        - "デジタルクラウンの回転抵抗と速度を物理現象（張力、摩擦）にマッピング。"
+        - "100種類以上のカスタムハプティックパターンによる、材質・イベント・感情の表現。"
+        - "サウンドとハプティクスの完全同期による、相乗的なフィードバック。"
+    - pillar: "シームレスな継続性 (Seamless Progression)"
+      goal: "プレイヤーの日常生活をゲームの進行に自然に統合し、能動的な『作業』感を排除する。"
+      key_features:
+        - "HealthKit（歩数、心拍数）とCoreLocation（場所）をトリガーとした受動的なリワードシステム。"
+        - "放置収益（アイドル）と手動介入（アクティブ）のハイブリッドなサイドシステム。"
+        - "デイリーリチュアルによる、生活リズムに合わせた自然なアプリ起動の習慣化。"
+    - pillar: "終わりなき探求心 (Endless Discovery)"
+      goal: "シンプルなコアアクションの先に、プレイヤーが自ら探求したくなる深淵な世界を用意する。"
+      key_features:
+        - "スキルツリー、ツール強化、熟練度による、プレイスタイルの細分化。"
+        - "膨大な収集アイテムと、それらを組み合わせることで解放される断片的な物語。"
+        - "シーズナルイベントと無限ダンジョンによる、長期的なエンドコンテンツの提供。"
+  ui_ux_philosophy:
+    name: "氷山モデル (The Iceberg Model)"
+    principle: "UIは機能の入り口であり、システムの全容ではない。プレイヤーが直接触れるUI/UXは、その裏に隠された広大なシステムの存在を感じさせつつも、それ自体は極限までシンプルでなければならない。"
+    analogy: "プレイヤーは氷山の一角（シンプルな操作）に感嘆する。その巨大さ（システムの奥深さ）は、海面の下にあるからこそ、転覆することなく安定してプレイヤーを支えることができる。"
+    methods:
+      - name: "触覚ファーストデザイン (Haptic-First Design)"
+        implementation_summary: "UI要素は、まず『どう感じるか』を設計し、次に『どう見えるか』を設計する。全てのインタラクションは、固有の触覚フィードバックを持つ。"
+      - name: "一画面一目的 (Single Purpose Screen)"
+        implementation_summary: "各画面は単一の目的（例：ピッキング、ダイヤル操作）に特化させ、関連しないUI要素を排除する。状態遷移は明確で、コンテキストが失われない。"
+      - name: "段階的システム解放 (Progressive System Unlocking)"
+        implementation_summary: "プレイヤーの習熟度に応じて、システムを順番に解放する。UIは、解放された機能のみを表示するように動的に変化する。"
+
+# --- 第2章：世界観と物語 ---
+chapter2_world_and_story:
+  world_setting:
+    premise: "『時間』が物理的なエネルギーであり、魔法であった時代。"
+    catalyst_event:
+      name: "大静寂 (The Great Silence)"
+      description: "原因不明の事象により、時間を司る『クロノマンサー』達が消失。彼らの遺した、時間を封じる宝箱『タイムチェスト』だけが世界に残された。"
+    current_state: "人々が時間魔法の記憶を忘れかけた現代。ごく一部の人間だけが、タイムチェストの鼓動を感じ、その封印を解く技術を探求している。"
+  player_role:
+    background: "伝説の錠前技師（ロックマスター）の孫。祖父から、奇妙な手帳と古びたツールを受け継ぐ。"
+    special_ability: "常人には感じられない、物質に残された微細な時間の響きや記憶を、指先の触覚で感じ取ることができる天賦の才。"
+  navigator:
+    name: "クロエ (Chloe)"
+    origin: "祖父が開発した、時間流を解析するAI『クロノコンパス』に宿る人格。膨大な知識を持つが、時折感情的な反応を見せる。"
+    role: "Apple Watchからの音声ガイド、宝箱の歴史解説、プレイヤーへの助言、そして物語の進行役。"
+  final_goal:
+    artifact_name: "ウロボロス・ハート (Ouroboros Heart)"
+    legend: "全てのタイムチェストの原型であり、世界の時間を司る心臓部とされる伝説の宝箱。『ウロボロス・ハートを開く者、時の螺旋を解き放つ』と手帳に記されている。"
+
+# --- 第3章：コア・ゲームプレイ ---
+chapter3_core_gameplay:
+  game_cycle:
+    - "① 入手 (Acquisition)"
+    - "② 鑑定 (Inspection)"
+    - "③ 開錠 (Unlocking)"
+    - "④ 報酬 (Reward)"
+    - "⑤ 成長 (Progression)"
+  apple_watch_gimmicks:
+    digital_crown:
+      concept: "超精密なアナログ入力を担う、プレイヤーの指先の延長。"
+      implementations:
+        - name: "ピッキング操作 (Pin Tumbler)"
+          scenario: "鍵穴内部のピンを、一本ずつ正しい高さ（シアライン）に合わせる。"
+          technical_detail:
+            swiftui_api: ".digitalCrownRotation(isContinuous: true, sensitivity: .high)"
+            viewmodel_logic:
+              input_mapping: "回転の差分(delta)を、現在選択中のピンの高さ(pinHeight)に加算。"
+              state_check: "`abs(pinHeight - correctHeight) < tolerance` で正解範囲を判定。"
+            haptic_pattern_ids:
+              - "haptic_picking_resistance_light"
+              - "haptic_picking_resistance_heavy"
+              - "haptic_picking_sweet_spot_pulse"
+              - "haptic_picking_set_click_firm"
+        - name: "ダイヤル操作 (Dial Combination)"
+          scenario: "複数のダイヤルを、正しい数字の組み合わせに合わせる。"
+          technical_detail:
+            swiftui_api: ".digitalCrownRotation(isContinuous: false, sensitivity: .medium)"
+            viewmodel_logic:
+              input_mapping: "回転の差分を、ダイヤルの数字にマッピング。回転方向で加減算。"
+              state_check: "正解の数字を通過する瞬間に、ViewModelがイベントを発行。"
+            haptic_pattern_ids:
+              - "haptic_dial_tick_subtle"
+              - "haptic_dial_correct_number_thump"
+    haptic_feedback:
+      concept: "視覚に頼らない、直感的で感情的な情報伝達チャネル。"
+      implementations:
+        - name: "レアリティの触覚表現 (Rarity Signature)"
+          scenario: "鑑定時に宝箱をタップすると、レアリティに応じた振動が再生される。"
+          technical_detail:
+            trigger_event: "onTapGesture on ChestView"
+            viewmodel_logic: "chest.rarityに応じて、HapticManagerに再生パターンIDを渡す。"
+            haptic_pattern_ids:
+              common: "haptic_rarity_common_short_tap"
+              rare: "haptic_rarity_rare_double_tap"
+              legendary: "haptic_rarity_legendary_heartbeat"
+        - name: "罠の予兆 (Trap Premonition)"
+          scenario: "罠が仕掛けられた錠前の開錠中、不規則なノイズ振動が混じる。"
+          technical_detail:
+            trigger_event: "開錠中のタイマーループ内 (例: 0.5秒ごと)"
+            viewmodel_logic: "`if chest.hasTrap { HapticManager.play(.trap_premonition_noise) }`"
+            haptic_pattern_ids:
+              - "haptic_trap_noise_subtle_static"
+    heart_rate_sensor:
+      concept: "プレイヤー自身の生体反応を、ゲームの難易度変数として取り込む。"
+      implementations:
+        - name: "呪いのデバフ (Curse Debuff)"
+          scenario: "『呪われた宝箱』を開錠中、プレイヤーの心拍数がゲームプレイに悪影響を及ぼす。"
+          technical_detail:
+            framework: "HealthKit"
+            data_query: "HKQuantityType.quantityType(forIdentifier: .heartRate) を1秒間隔でストリーミング。"
+            viewmodel_logic:
+              thresholds:
+                warning: 100 # BPM
+                danger: 120 # BPM
+              effects:
+                warning: "UIに僅かなノイズエフェクト、触覚フィードバックに遅延を追加。"
+                danger: "デジタルクラウンの感度をランダムに変動させる、または一時的に操作をロックする。"
+    # ... 他のギミックも同様に詳細化 ...
+
+# --- 第4章：プレイヤー成長と継続システム ---
+chapter4_player_growth:
+  loop_structure:
+    micro_loop:
+      name: "マイクロループ（数分）：『一分間の達成感』"
+      systems:
+        - name: "キーフラグメント（鍵の欠片）"
+          concept: "全てのプレイが無駄にならないための即時報酬システム。"
+          mechanics:
+            trigger: "宝箱の開錠成功時。"
+            process: "宝箱のレアリティに応じて、1〜10個の欠片をドロップ。"
+            reward: "100個集めると、レア以上確定の『マスターズ・チェスト』を生成可能。"
+          player_impact: "ハズレの宝箱でも徒労感がなく、次のプレイへの短期的な目標を提供する。"
+    middle_loop:
+      name: "ミドルループ（数日）：『自分だけの達人技』"
+      systems:
+        - name: "錠前熟練度 (Lock Mastery)"
+          concept: "特定のプレイスタイルを深めることで、専門家としてのロールプレイを強化する。"
+          mechanics:
+            trigger: "特定の錠前タイプを開錠するたびに、対応する熟練度EXPを獲得。"
+            process: "熟練度レベルが上がると、その錠前に特化したパッシブスキルが自動で付与される（例：触覚フィードバックの増幅、許容範囲の拡大）。"
+            reward: "スキルポイント割り振りのような能動的な選択ではなく、自然なプレイの結果としての受動的な成長。"
+          player_impact: "『自分はダイヤル錠のプロだ』というような、愛着と専門性を育む。"
+    # ... 他のループ、システムも同様に詳細化 ...
+
+# --- 第5章：サイドシステム『共鳴機関』 ---
+chapter5_side_system_resonance_engine:
+  concept:
+    in_game_name: "共鳴機関 (Resonance Engine)"
+    player_facing_description: "祖父が遺した、時間そのものから微細なエネルギーを抽出する謎の装置。時々、気にかけてやると良いことがあるかもしれない。"
+  core_mechanics:
+    - name: "手動共鳴 (Manual Resonance)"
+      action: "デジタルクラウンを回す。"
+      ui_feedback: "『チ…チ…』という精密な触覚フィードバックと、回転量に応じたポイント獲得アニメーション。"
+      growth_path: "『手巻きジェネレーター』の強化により、1回転あたりの獲得ポイントが指数関数的に増加。"
+    - name: "自動共鳴 (Automated Resonance)"
+      action: "『調律フォーク』を設置する（放置）。"
+      ui_feedback: "アプリを閉じていても、次に開いた時にオフライン収益が表示される。"
+      growth_path: "『共鳴増幅器』の強化により、全フォークの毎秒生成量が乗算で増加。"
+  synergy_with_main_game:
+    dependency_loop:
+      name: "攻略のための要求"
+      description: "高難易度の宝箱は、共鳴機関でしか作れない特殊な消耗品（例：『クロノ・オイル』）がないと、攻略が著しく困難になる。"
+    reward_loop:
+      name: "限界を超える報酬"
+      description: "共鳴機関で得られる膨大なポイントは、メインゲームでレベルキャップに達したツールの『限界突破』に使用できる。"
+  formulas:
+    parameters: # バランス調整用
+      manual_base: 1.0
+      manual_exponent: 1.08
+      auto_base: 0.5
+      auto_exponent: 1.12
+      cost_base: 50.0
+      cost_exponent: 1.15
+    expressions:
+      manual_points_per_rotation: "manual_base * pow(manual_exponent, Double(engine.handCrankLevel))"
+      auto_points_per_second: "Double(engine.tuningForks) * auto_base * pow(auto_exponent, Double(engine.amplifierLevel))"
+      upgrade_cost: "cost_base * pow(cost_exponent, Double(currentLevel))"
+
+# --- 第6章：技術アーキテクチャと実装 ---
+chapter6_technical_architecture:
+  architecture:
+    pattern: "MVVM-C (Model-View-ViewModel-Coordinator)"
+    justification: "Viewとビジネスロジックの分離(MVVM)に加え、Coordinatorが画面遷移の責務を持つことで、各コンポーネントの再利用性とテスト容易性を最大化する。"
+  major_frameworks:
+    - name: "SwiftUI"
+      usage_details: "アプリケーション全体のUI構造、レイアウト、状態管理の基盤。"
+    - name: "WatchKit"
+      usage_details: "デジタルクラウン入力(.digitalCrownRotation)、触覚フィードバック(WKInterfaceDevice)、バックグラウンドタスク(WKApplicationRefreshBackgroundTask)など、デバイス固有機能へのアクセス。"
+    - name: "Combine"
+      usage_details: "ViewModel内での非同期処理、複数の@Publishedプロパティの合成、タイマー処理、イベント駆動のデータフロー管理。"
+    # ... 他フレームワークも同様 ...
+  persistence_strategy:
+    - type: "UserDefaults (AppGroup)"
+      data_examples: "PlayerProfile, ResonanceEngine, Settings"
+      location: "AppGroupコンテナ内。メインアプリとコンプリケーション間で共有。"
+      access_logic: "軽量で頻繁にアクセスするデータの保存。CodableをJSONデータにエンコードして格納。"
+    - type: "FileManager (JSON)"
+      data_examples: "Inventory (TreasureChest[], Tool[])"
+      location: "アプリのDocumentsディレクトリ。"
+      access_logic: "肥大化する可能性があるリストデータ。アプリ起動時とバックグラウンド移行時に非同期で読み書き。"
+
+# --- 第7章：開発運用と品質保証 ---
+chapter7_devops_and_qa:
+  version_control:
+    strategy: "Git Flow"
+    branching_model: "main, develop, feature/*, release/*, hotfix/*"
+    commit_policy: "Conventional Commits規約（feat:, fix:, docs:など）を採用し、変更履歴の可読性を高める。"
+  ci_cd:
+    tool: "Xcode Cloud"
+    workflow:
+      triggers:
+        - "featureブランチへのpush"
+        - "developへのPull Request作成"
+        - "releaseブランチの作成"
+      actions:
+        - "コンパイルチェックと単体テストの実行。"
+        - "全テストスイート（UIテスト含む）の実行と静的解析。"
+        - "TestFlightへの内部テスター向けビルドの自動デプロイ。"
+  # ... 他の項目も同様に詳細化 ...
+
+# --- 第8章：ユーザーエクスペリエンス (UX) の深化 ---
+chapter8_ux_deep_dive:
+  ui_ux_design_principles:
+    - name: "一画面一目的 (Single Purpose Screen)"
+      principle: "一度に一つのタスク。ユーザーの認知負荷を最小限に抑える。"
+      implementation_example: "ピッキング画面には、ピンとシアラインのみを表示。タイマーは視覚的HUDではなく、時間切れが近づいた際の心音のような触覚フィードバックで表現。"
+      user_benefit: "高い没入感と、操作のストレスからの解放。"
+    # ... 他の原則も同様に詳細化 ...
+  onboarding_and_disclosure_strategy:
+    - name: "インタラクティブ・ファースト (Interactive-First Onboarding)"
+      concept: "教えるな、感じさせろ (Don't Tell, Let Them Feel)。"
+      sequence:
+        step1: "アプリ初回起動後、3秒以内に操作可能な『木の宝箱』を表示。"
+        step2: "『デジタルクラウンを回してみてください』というガイドのみで、触覚の快感を体験させる。"
+        step3: "最初の成功体験（報酬獲得）の後に、初めてナビゲーター『クロエ』が登場し、物語の導入を簡潔に語る。"
+    - name: "段階的システム解放 (Progressive System Unlocking)"
+      stages:
+        - stage: "見習い期 (Apprentice Phase)"
+          level_range: "1-5"
+          theme: "純粋な開錠体験の習得"
+          unlocked_systems:
+            - system_name: "宝箱開錠"
+              introduction_method: "インタラクティブ・チュートリアル"
+            - system_name: "キーフラグメント"
+              introduction_method: "UI上に自然に表示され、説明はない"
+          ui_state:
+            visible_elements: "宝箱リストのみ"
+            hidden_elements: "共鳴機関タブ, スキルタブ, 図鑑タブ"
+        # ... 他のステージも同様に詳細化 ...
+
+# --- 第9章：ビジネスとエコシステム ---
+chapter9_business_and_ecosystem:
+  monetization:
+    model:
+      type: "買い切り型（プレミアムアプリ）"
+      pricing_strategy: "ミドルレンジの価格設定（例：コーヒー2杯分）。体験の質に対する自信を示す。"
+    philosophy: "我々は、ユーザーの時間とお金を尊重する。体験は完全であり、広告やルートボックスによって中断されることはない。これはゲームであり、ギャンブルではない。"
+  analytics_and_privacy:
+    tool:
+      service_name: "Apple App Analytics"
+      data_scope: "個人を特定しない、完全に匿名化された集計データ（クラッシュ率、セッション時間、国別ダウンロード数）のみ。"
+    policy:
+      key_statements:
+        - "HealthKitおよびCoreLocationのデータは、ゲームプレイ体験向上のためのみにデバイス内で処理され、外部サーバーには一切送信されません。"
+        - "我々のサーバーは、あなたの個人データやゲームの進捗を一切保持しません。"
+  # ... 他の項目も同様に詳細化 ...

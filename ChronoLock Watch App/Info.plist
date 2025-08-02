@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>ChronoLock uses your heart rate to create immersive gameplay experiences with cursed treasure chests.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>ChronoLock uses your location to trigger location-based treasure discoveries and rewards.</string>
+	<key>WKBackgroundModes</key>
+	<array>
+		<string>background-app-refresh</string>
+		<string>workout-processing</string>
+	</array>
+</dict>
+</plist>

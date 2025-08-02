@@ -211,8 +211,7 @@ struct ChestRowView: View {
                 case .dialCombination:
                     DialCombinationView(chest: chest)
                 case .rotaryPuzzle:
-                    // TODO: Implement RotaryPuzzleView
-                    PinTumblerView(chest: chest)
+                    RotaryPuzzleView(chest: chest)
                 }
             }
         }

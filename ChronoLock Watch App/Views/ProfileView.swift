@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var gameData = GameDataManager.shared
+    @State private var showAudioSettings = false
     
     var body: some View {
         ScrollView {
@@ -11,8 +12,50 @@ struct ProfileView: View {
                 statsCards
                 
                 masterySection
+                
+                settingsSection
             }
             .padding(.horizontal, 4)
+        }
+        .sheet(isPresented: $showAudioSettings) {
+            AudioSettingsView()
+        }
+    }
+    
+    private var settingsSection: some View {
+        VStack(spacing: 4) {
+            Text("Settings")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+            
+            Button(action: {
+                showAudioSettings = true
+            }) {
+                HStack {
+                    Image(systemName: "speaker.wave.2.fill")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    
+                    Text("Audio Settings")
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                    
+                    Spacer()
+                    
+                    Image(systemName: "chevron.right")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 6)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.blue.opacity(0.05))
+                        .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+                )
+            }
+            .buttonStyle(PlainButtonStyle())
         }
     }
     

@@ -24,6 +24,7 @@ class HapticManager: ObservableObject {
     static let shared = HapticManager()
     
     private let device = WKInterfaceDevice.current()
+    private let audioManager = AudioManager.shared
     
     private init() {}
     
@@ -62,10 +63,12 @@ class HapticManager: ObservableObject {
     
     private func playLightTap() {
         device.play(.notification)
+        audioManager.playSound(.lockClick, volume: 0.3)
     }
     
     private func playHeavyTap() {
         device.play(.directionUp)
+        audioManager.playSound(.metalScrape, volume: 0.4)
     }
     
     private func playPulse() {
@@ -73,33 +76,41 @@ class HapticManager: ObservableObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.device.play(.start)
         }
+        audioManager.playSound(.lockClick, volume: 0.5)
     }
     
     private func playClick() {
         device.play(.click)
+        audioManager.playSound(.lockClick, volume: 0.4)
     }
     
     private func playSubtleTick() {
         device.play(.notification)
+        audioManager.playSound(.lockClick, volume: 0.2)
     }
     
     private func playSuccess() {
         device.play(.success)
+        audioManager.playSound(.successChime, volume: 0.8)
     }
     
     private func playShortTap() {
         device.play(.notification)
+        audioManager.playSound(.lockClick, volume: 0.3)
     }
     
     private func playDoubleTap() {
         device.play(.notification)
+        audioManager.playSound(.lockClick, volume: 0.4)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.device.play(.notification)
+            self.audioManager.playSound(.lockClick, volume: 0.4)
         }
     }
     
     private func playHeartbeat() {
         device.play(.directionUp)
+        audioManager.playSound(.heartbeat, volume: 0.6)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
             self.device.play(.directionUp)
         }
@@ -107,5 +118,6 @@ class HapticManager: ObservableObject {
     
     private func playStatic() {
         device.play(.retry)
+        audioManager.playSound(.failureSound, volume: 0.5)
     }
 }

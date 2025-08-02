@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ResonanceEngineView: View {
     @StateObject private var viewModel = ResonanceEngineViewModel()
+    @StateObject private var audioManager = AudioManager.shared
     @State private var crownRotation: Double = 0
     @State private var selectedTab = 0
     
@@ -17,6 +18,12 @@ struct ResonanceEngineView: View {
         .indexViewStyle(.page(backgroundDisplayMode: .always))
         .sheet(isPresented: $viewModel.showOfflineRewards) {
             offlineRewardsSheet
+        }
+        .onAppear {
+            audioManager.playAmbientLoop(.resonanceHum)
+        }
+        .onDisappear {
+            audioManager.stopAmbientLoop(.resonanceHum)
         }
     }
     

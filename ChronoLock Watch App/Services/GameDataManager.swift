@@ -8,7 +8,7 @@ class GameDataManager: ObservableObject {
     @Published var resonanceEngine: ResonanceEngine
     @Published var inventory: [TreasureChest] = []
     
-    private let userDefaults = UserDefaults(suiteName: "group.com.chronolock.shared")!
+    private let userDefaults = UserDefaults.standard
     
     private init() {
         self.playerProfile = GameDataManager.loadPlayerProfile()
@@ -41,7 +41,7 @@ class GameDataManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     private static func loadPlayerProfile() -> PlayerProfile {
-        let userDefaults = UserDefaults(suiteName: "group.com.chronolock.shared")!
+        let userDefaults = UserDefaults.standard
         guard let data = userDefaults.data(forKey: "playerProfile"),
               let profile = try? JSONDecoder().decode(PlayerProfile.self, from: data) else {
             return PlayerProfile()
@@ -55,7 +55,7 @@ class GameDataManager: ObservableObject {
     }
     
     private static func loadResonanceEngine() -> ResonanceEngine {
-        let userDefaults = UserDefaults(suiteName: "group.com.chronolock.shared")!
+        let userDefaults = UserDefaults.standard
         guard let data = userDefaults.data(forKey: "resonanceEngine"),
               let engine = try? JSONDecoder().decode(ResonanceEngine.self, from: data) else {
             return ResonanceEngine()
@@ -69,7 +69,7 @@ class GameDataManager: ObservableObject {
     }
     
     private static func loadInventory() -> [TreasureChest] {
-        let userDefaults = UserDefaults(suiteName: "group.com.chronolock.shared")!
+        let userDefaults = UserDefaults.standard
         guard let data = userDefaults.data(forKey: "inventory"),
               let inventory = try? JSONDecoder().decode([TreasureChest].self, from: data) else {
             return Self.generateStarterChests()

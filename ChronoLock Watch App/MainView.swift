@@ -2,37 +2,30 @@ import SwiftUI
 import WatchKit
 
 struct MainView: View {
-    @State private var crownValue: Double = 0.0
+    @StateObject private var coordinator = AppCoordinator()
     
     var body: some View {
-        VStack {
-            Image(systemName: "lock.rotation")
-                .font(.largeTitle)
-                .foregroundColor(.accent)
-            
-            Text("ChronoLock")
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Text("Turn Crown to Begin")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            Text("\(crownValue, specifier: "%.1f")")
-                .font(.caption2)
-                .foregroundColor(.secondary)
+        Group {
+            if coordinator.showOnboarding {
+                OnboardingView(coordinator: coordinator)
+            } else {
+                TabView(selection: $coordinator.currentTab) {
+                    ChestInventoryView()
+                        .tag(AppCoordinator.AppTab.inventory)
+                    
+                    ResonanceEngineView()
+                        .tag(AppCoordinator.AppTab.resonance)
+                    
+                    ProfileView()
+                        .tag(AppCoordinator.AppTab.profile)
+                }
+                .tabViewStyle(.page)
+                .indexViewStyle(.page(backgroundDisplayMode: .always))
+            }
         }
-        .digitalCrownRotation(
-            $crownValue,
-            from: 0,
-            through: 100,
-            by: 1,
-            sensitivity: .medium,
-            isContinuous: false,
-            isHapticFeedbackEnabled: true
-        )
         .onReceive(NotificationCenter.default.publisher(for: WKExtension.applicationDidBecomeActiveNotification)) { _ in
-            // App became active
+            // App became active - calculate offline rewards if needed
+            _ = GameDataManager.shared.calculateOfflineRewards()
         }
     }
 }

@@ -62,7 +62,20 @@ struct PinTumblerView: View {
                 .foregroundColor(.primary)
                 .lineLimit(1)
             
-            if viewModel.isUnlocking {
+            if viewModel.currentChest.isCursed && viewModel.isHeartRateMonitoring {
+                HStack(spacing: 2) {
+                    Image(systemName: "heart.fill")
+                        .font(.caption2)
+                        .foregroundColor(Color(
+                            red: viewModel.heartRateEffect.color.red,
+                            green: viewModel.heartRateEffect.color.green,
+                            blue: viewModel.heartRateEffect.color.blue
+                        ))
+                    Text(viewModel.heartRateEffect.description)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            } else if viewModel.isUnlocking {
                 Text("Pin \(viewModel.currentPin + 1)/\(viewModel.pinHeights.count)")
                     .font(.caption2)
                     .foregroundColor(.secondary)

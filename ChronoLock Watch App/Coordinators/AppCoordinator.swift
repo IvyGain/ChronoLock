@@ -9,6 +9,7 @@ class AppCoordinator: ObservableObject {
     
     enum AppTab: String, CaseIterable {
         case inventory = "Inventory"
+        case discovery = "Discovery"
         case resonance = "Resonance"
         case profile = "Profile"
         
@@ -16,6 +17,8 @@ class AppCoordinator: ObservableObject {
             switch self {
             case .inventory:
                 return "shippingbox.fill"
+            case .discovery:
+                return "location.fill"
             case .resonance:
                 return "bolt.fill"
             case .profile:

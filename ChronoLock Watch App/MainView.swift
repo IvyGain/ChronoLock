@@ -13,6 +13,9 @@ struct MainView: View {
                     ChestInventoryView()
                         .tag(AppCoordinator.AppTab.inventory)
                     
+                    LocationDiscoveryView()
+                        .tag(AppCoordinator.AppTab.discovery)
+                    
                     ResonanceEngineView()
                         .tag(AppCoordinator.AppTab.resonance)
                     

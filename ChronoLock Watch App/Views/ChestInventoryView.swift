@@ -2,7 +2,9 @@ import SwiftUI
 
 struct ChestInventoryView: View {
     @StateObject private var gameData = GameDataManager.shared
+    @StateObject private var healthKit = HealthKitManager.shared
     @State private var selectedTab = 0
+    @State private var showHealthKitPermission = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -14,6 +16,22 @@ struct ChestInventoryView: View {
         }
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .always))
+        .sheet(isPresented: $showHealthKitPermission) {
+            HealthKitPermissionView()
+        }
+        .onAppear {
+            checkHealthKitPermission()
+        }
+    }
+    
+    private func checkHealthKitPermission() {
+        // Show HealthKit permission if there are cursed chests and permission not granted
+        let hasCursedChests = gameData.inventory.contains { $0.isCursed && !$0.isUnlocked }
+        if hasCursedChests && !healthKit.isAuthorized {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showHealthKitPermission = true
+            }
+        }
     }
     
     private var availableChestsView: some View {

@@ -102,6 +102,24 @@ class GameDataManager: ObservableObject {
                 lockType: .rotaryPuzzle,
                 difficulty: 5,
                 hasTrap: true
+            ),
+            TreasureChest(
+                name: "Cursed Soulbound Chest",
+                rarity: .legendary,
+                lockType: .pinTumbler,
+                difficulty: 4,
+                hasTrap: false,
+                isCursed: true,
+                timeLimit: 30.0
+            ),
+            TreasureChest(
+                name: "Heart of Darkness Vault",
+                rarity: .legendary,
+                lockType: .dialCombination,
+                difficulty: 6,
+                hasTrap: true,
+                isCursed: true,
+                timeLimit: 45.0
             )
         ]
     }

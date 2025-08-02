@@ -11,11 +11,15 @@ class LockPickingViewModel: ObservableObject {
     @Published var pinHeights: [Double] = []
     @Published var pinStates: [PinState] = []
     @Published var progress: Double = 0
+    @Published var heartRateEffect: HeartRateEffect = .none
+    @Published var isHeartRateMonitoring = false
     
     private var correctHeights: [Double] = []
     private var timer: Timer?
     private let hapticManager = HapticManager.shared
+    private let healthKitManager = HealthKitManager.shared
     private let tolerance: Double = 0.1
+    private var cancellables = Set<AnyCancellable>()
     
     enum PinState {
         case locked
@@ -26,6 +30,23 @@ class LockPickingViewModel: ObservableObject {
     init(chest: TreasureChest) {
         self.currentChest = chest
         setupLock()
+        setupHeartRateMonitoring()
+    }
+    
+    private func setupHeartRateMonitoring() {
+        // Subscribe to heart rate updates for cursed chests
+        if currentChest.isCursed {
+            healthKitManager.$currentHeartRate
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] heartRate in
+                    self?.heartRateEffect = self?.healthKitManager.getHeartRateEffect() ?? .none
+                }
+                .store(in: &cancellables)
+            
+            healthKitManager.$isMonitoring
+                .receive(on: DispatchQueue.main)
+                .assign(to: &$isHeartRateMonitoring)
+        }
     }
     
     private func setupLock() {
@@ -43,6 +64,11 @@ class LockPickingViewModel: ObservableObject {
         guard !isUnlocking else { return }
         
         isUnlocking = true
+        
+        // Start heart rate monitoring for cursed chests
+        if currentChest.isCursed && healthKitManager.isAuthorized {
+            healthKitManager.startHeartRateMonitoring()
+        }
         
         if currentChest.timeLimit != nil {
             startTimer()
@@ -70,13 +96,25 @@ class LockPickingViewModel: ObservableObject {
     func updatePinHeight(delta: Double) {
         guard isUnlocking, currentPin < pinHeights.count else { return }
         
+        // Apply heart rate effects for cursed chests
+        var adjustedDelta = delta
+        if currentChest.isCursed {
+            adjustedDelta = applyHeartRateEffect(to: delta)
+        }
+        
         let oldHeight = pinHeights[currentPin]
-        pinHeights[currentPin] = max(0, min(1.0, pinHeights[currentPin] + delta))
+        pinHeights[currentPin] = max(0, min(1.0, pinHeights[currentPin] + adjustedDelta))
         
         let correctHeight = correctHeights[currentPin]
         let distance = abs(pinHeights[currentPin] - correctHeight)
         
-        if distance < tolerance {
+        // Adjust tolerance based on heart rate for cursed chests
+        var adjustedTolerance = tolerance
+        if currentChest.isCursed {
+            adjustedTolerance = adjustToleranceForHeartRate()
+        }
+        
+        if distance < adjustedTolerance {
             if pinStates[currentPin] != .correct {
                 pinStates[currentPin] = .correct
                 hapticManager.play(.pickingSweetSpotPulse)
@@ -92,6 +130,40 @@ class LockPickingViewModel: ObservableObject {
         playResistanceHaptic(resistance: resistance)
         
         updateProgress()
+    }
+    
+    private func applyHeartRateEffect(to delta: Double) -> Double {
+        switch heartRateEffect {
+        case .none:
+            return delta
+        case .mild:
+            // Slightly jittery movement
+            let noise = Double.random(in: -0.02...0.02)
+            return delta + noise
+        case .moderate:
+            // More erratic movement with reduced precision
+            let noise = Double.random(in: -0.05...0.05)
+            let dampening = Double.random(in: 0.7...1.3)
+            return (delta * dampening) + noise
+        case .severe:
+            // Highly unstable movement
+            let noise = Double.random(in: -0.1...0.1)
+            let dampening = Double.random(in: 0.5...1.5)
+            return (delta * dampening) + noise
+        }
+    }
+    
+    private func adjustToleranceForHeartRate() -> Double {
+        switch heartRateEffect {
+        case .none:
+            return tolerance
+        case .mild:
+            return tolerance * 0.9  // Slightly harder
+        case .moderate:
+            return tolerance * 0.7  // Moderately harder
+        case .severe:
+            return tolerance * 0.5  // Much harder
+        }
     }
     
     private func calculateResistance(height: Double, correctHeight: Double) -> Double {
@@ -148,6 +220,11 @@ class LockPickingViewModel: ObservableObject {
         timer?.invalidate()
         timer = nil
         
+        // Stop heart rate monitoring
+        if currentChest.isCursed {
+            healthKitManager.stopHeartRateMonitoring()
+        }
+        
         isUnlocking = false
         isUnlocked = true
         
@@ -160,12 +237,18 @@ class LockPickingViewModel: ObservableObject {
         timer?.invalidate()
         timer = nil
         
+        // Stop heart rate monitoring
+        if currentChest.isCursed {
+            healthKitManager.stopHeartRateMonitoring()
+        }
+        
         isUnlocking = false
         
         pinHeights = Array(repeating: 0.0, count: pinHeights.count)
         pinStates = Array(repeating: .locked, count: pinStates.count)
         currentPin = 0
         progress = 0
+        heartRateEffect = .none
         
         if currentChest.timeLimit != nil {
             timeRemaining = currentChest.timeLimit!
@@ -178,10 +261,16 @@ class LockPickingViewModel: ObservableObject {
         timer?.invalidate()
         timer = nil
         
+        // Stop heart rate monitoring
+        if currentChest.isCursed {
+            healthKitManager.stopHeartRateMonitoring()
+        }
+        
         isUnlocking = false
         isUnlocked = false
         currentPin = 0
         progress = 0
+        heartRateEffect = .none
         
         setupLock()
     }

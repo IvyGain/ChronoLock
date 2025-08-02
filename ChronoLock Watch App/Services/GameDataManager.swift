@@ -135,6 +135,21 @@ class GameDataManager: ObservableObject {
         inventory[index].unlockTime = Date()
         
         playerProfile.unlockChest(chest)
+        
+        // Trigger achievement check
+        AchievementManager.shared.checkAllAchievements()
+    }
+    
+    func addExperience(_ amount: Int) {
+        playerProfile.addExperience(amount)
+    }
+    
+    func addKeyFragments(_ amount: Int) {
+        playerProfile.addKeyFragments(amount)
+    }
+    
+    func savePlayerProfile() {
+        savePlayerProfile(playerProfile)
     }
     
     func calculateOfflineRewards() -> Double {

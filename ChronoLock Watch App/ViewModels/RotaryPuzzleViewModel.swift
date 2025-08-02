@@ -248,6 +248,11 @@ class RotaryPuzzleViewModel: ObservableObject {
         
         hapticManager.play(.rarityLegendaryHeartbeat)
         
+        // Check for heart rate spike achievement
+        if currentChest.isCursed && heartRateEffect != .none {
+            AchievementManager.shared.triggerHeartRateUnlock()
+        }
+        
         GameDataManager.shared.unlockChest(currentChest)
     }
     
@@ -260,6 +265,10 @@ class RotaryPuzzleViewModel: ObservableObject {
         }
         
         isUnlocking = false
+        
+        // Reset consecutive unlocks on failure
+        GameDataManager.shared.playerProfile.resetConsecutiveUnlocks()
+        GameDataManager.shared.savePlayerProfile()
         
         ringRotations = Array(repeating: 0.0, count: ringCount)
         ringStates = Array(repeating: .locked, count: ringCount)

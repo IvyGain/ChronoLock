@@ -18,6 +18,10 @@ enum HapticPattern: String, CaseIterable {
     
     case resonanceManualClick = "haptic_resonance_manual_click"
     case resonanceOfflineReward = "haptic_resonance_offline_reward"
+    
+    case achievementCommonPop = "haptic_achievement_common_pop"
+    case achievementRareFlourish = "haptic_achievement_rare_flourish"
+    case achievementLegendaryFanfare = "haptic_achievement_legendary_fanfare"
 }
 
 class HapticManager: ObservableObject {
@@ -58,6 +62,13 @@ class HapticManager: ObservableObject {
             playClick()
         case .resonanceOfflineReward:
             playSuccess()
+            
+        case .achievementCommonPop:
+            playAchievementPop()
+        case .achievementRareFlourish:
+            playAchievementFlourish()
+        case .achievementLegendaryFanfare:
+            playAchievementFanfare()
         }
     }
     
@@ -119,5 +130,35 @@ class HapticManager: ObservableObject {
     private func playStatic() {
         device.play(.retry)
         audioManager.playSound(.failureSound, volume: 0.5)
+    }
+    
+    private func playAchievementPop() {
+        device.play(.notification)
+        audioManager.playSound(.successChime, volume: 0.6)
+    }
+    
+    private func playAchievementFlourish() {
+        device.play(.notification)
+        audioManager.playSound(.successChime, volume: 0.7)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.device.play(.success)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.device.play(.notification)
+        }
+    }
+    
+    private func playAchievementFanfare() {
+        device.play(.directionUp)
+        audioManager.playSound(.successChime, volume: 0.9)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.device.play(.success)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.device.play(.directionUp)
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            self.device.play(.notification)
+        }
     }
 }

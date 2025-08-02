@@ -11,6 +11,7 @@ class AppCoordinator: ObservableObject {
         case inventory = "Inventory"
         case discovery = "Discovery"
         case resonance = "Resonance"
+        case achievements = "Achievements"
         case profile = "Profile"
         
         var systemImage: String {
@@ -21,6 +22,8 @@ class AppCoordinator: ObservableObject {
                 return "location.fill"
             case .resonance:
                 return "bolt.fill"
+            case .achievements:
+                return "trophy.fill"
             case .profile:
                 return "person.fill"
             }

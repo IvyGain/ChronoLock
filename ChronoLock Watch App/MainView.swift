@@ -19,6 +19,9 @@ struct MainView: View {
                     ResonanceEngineView()
                         .tag(AppCoordinator.AppTab.resonance)
                     
+                    AchievementsView()
+                        .tag(AppCoordinator.AppTab.achievements)
+                    
                     ProfileView()
                         .tag(AppCoordinator.AppTab.profile)
                 }

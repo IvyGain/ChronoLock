@@ -6,6 +6,8 @@ struct PlayerProfile: Codable {
     var experience: Int = 0
     var keyFragments: Int = 0
     var totalChestsUnlocked: Int = 0
+    var consecutiveSuccessfulUnlocks: Int = 0
+    var hasUnlockedDuringHeartRateSpike: Bool = false
     
     var lockMastery: [LockType: LockMastery] = [:]
     
@@ -39,6 +41,7 @@ struct PlayerProfile: Codable {
     
     mutating func unlockChest(_ chest: TreasureChest) {
         totalChestsUnlocked += 1
+        consecutiveSuccessfulUnlocks += 1
         addExperience(chest.experienceReward)
         addKeyFragments(chest.keyFragmentReward)
         
@@ -46,6 +49,10 @@ struct PlayerProfile: Codable {
             lockMastery[chest.lockType] = LockMastery(lockType: chest.lockType)
         }
         lockMastery[chest.lockType]?.addExperience(chest.difficulty * 10)
+    }
+    
+    mutating func resetConsecutiveUnlocks() {
+        consecutiveSuccessfulUnlocks = 0
     }
     
     private mutating func checkLevelUp() {

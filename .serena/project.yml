@@ -1,0 +1,14 @@
+project_name: ChronoLock
+language: typescript  # Using TypeScript as closest supported language for Swift/iOS project
+description: "ChronoLock - Apple Watch lock picking adventure game"
+source_files:
+  - "ChronoLock Watch App/**/*.swift"
+  - "ChronoLock/**/*.swift"
+  - "*.swift"
+ignore_patterns:
+  - ".git/**"
+  - "build/**"
+  - "DerivedData/**"
+  - "*.xcworkspace/**"
+  - "*.xcodeproj/**"
+  - ".DS_Store"
